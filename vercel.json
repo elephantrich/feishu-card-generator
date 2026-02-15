@@ -1,6 +1,5 @@
 {
   "version": 2,
-  "name": "feishu-card-generator",
   "builds": [
     {
       "src": "index.html",
@@ -12,11 +11,5 @@
       "src": "/(.*)",
       "dest": "/index.html"
     }
-  ],
-  "domains": [
-    "taillight.com.cn"
-  ],
-  "alias": [
-    "taillight.com.cn"
   ]
 }
