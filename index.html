@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>飞书卡片生成器 - 免费在线工具</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 30px;
+        }
+
+        .section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .section h2 {
+            margin-bottom: 20px;
+            color: #333;
+            font-size: 1.3em;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .color-options {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .color-option {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .color-option:hover {
+            transform: scale(1.1);
+        }
+
+        .color-option.selected {
+            border-color: #333;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+        }
+
+        .color-option.blue { background: #2D74FF; }
+        .color-option.red { background: #FF5757; }
+        .color-option.orange { background: #FF9E38; }
+        .color-option.green { background: #2DA441; }
+        .color-option.purple { background: #8B5CF6; }
+        .color-option.grey { background: #858F9D; }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .preview {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 20px;
+            min-height: 300px;
+        }
+
+        .preview-card {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .preview-header {
+            padding: 20px;
+            font-size: 1.3em;
+            font-weight: 600;
+        }
+
+        .preview-content {
+            padding: 20px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+        }
+
+        .json-output {
+            margin-top: 20px;
+            padding: 20px;
+            background: #1e1e1e;
+            color: #d4d4d4;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            overflow-x: auto;
+            display: none;
+        }
+
+        .json-output.show {
+            display: block;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            margin-left: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎨 飞书卡片生成器</h1>
+            <p>免费在线工具 | 一键生成飞书消息卡片 | 支持 Markdown</p>
+        </div>
+
+        <div class="main-content">
+            <div class="section">
+                <h2>📝 卡片配置</h2>
+
+                <div class="form-group">
+                    <label>标题</label>
+                    <input type="text" id="cardTitle" placeholder="例如：项目进度更新" value="🚀 消息通知">
+                </div>
+
+                <div class="form-group">
+                    <label>内容（支持 Markdown）</label>
+                    <textarea id="cardContent" placeholder="支持 **加粗**、*斜体*、`代码` 等格式">这是测试内容
+
+**重要提醒：**
+- 任务A：已完成 ✅
+- 任务B：进行中 ⏳
+- 任务C：待开始 ⏸️
+
+```javascript
+console.log('Hello Feishu!');
+```
+_这是一条测试消息_</textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>标题颜色</label>
+                    <div class="color-options">
+                        <div class="color-option blue selected" data-color="blue" title="蓝色"></div>
+                        <div class="color-option red" data-color="red" title="红色"></div>
+                        <div class="color-option orange" data-color="orange" title="橙色"></div>
+                        <div class="color-option green" data-color="green" title="绿色"></div>
+                        <div class="color-option purple" data-color="purple" title="紫色"></div>
+                        <div class="color-option grey" data-color="grey" title="灰色"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <button class="btn" onclick="generateCard()">🎯 生成卡片</button>
+                    <button class="btn btn-secondary" onclick="showJSON()">📋 查看 JSON</button>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>👁️ 实时预览</h2>
+                <div class="preview">
+                    <div class="preview-card" id="previewCard">
+                        <div class="preview-header" id="previewHeader" style="background: #2D74FF; color: white;">
+                            🚀 消息通知
+                        </div>
+                        <div class="preview-content" id="previewContent">
+                            这是测试内容
+
+**重要提醒：**
+- 任务A：已完成 ✅
+- 任务B：进行中 ⏳
+- 任务C：待开始 ⏸️
+
+```javascript
+console.log('Hello Feishu!');
+```
+_这是一条测试消息_
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="json-output" id="jsonOutput"></div>
+    </div>
+
+    <script>
+        let selectedColor = 'blue';
+
+        const colorMap = {
+            blue: '#2D74FF',
+            red: '#FF5757',
+            orange: '#FF9E38',
+            green: '#2DA441',
+            purple: '#8B5CF6',
+            grey: '#858F9D'
+        };
+
+        // 颜色选择
+        document.querySelectorAll('.color-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.color-option').forEach(o => o.classList.remove('selected'));
+                this.classList.add('selected');
+                selectedColor = this.dataset.color;
+                updatePreview();
+            });
+        });
+
+        // 实时更新预览
+        document.getElementById('cardTitle').addEventListener('input', updatePreview);
+        document.getElementById('cardContent').addEventListener('input', updatePreview);
+
+        function updatePreview() {
+            const title = document.getElementById('cardTitle').value;
+            const content = document.getElementById('cardContent').value;
+
+            document.getElementById('previewHeader').textContent = title;
+            document.getElementById('previewHeader').style.background = colorMap[selectedColor];
+            document.getElementById('previewContent').textContent = content;
+        }
+
+        function generateCard() {
+            updatePreview();
+            alert('✅ 卡片已生成！点击"查看 JSON"获取代码');
+        }
+
+        function showJSON() {
+            const title = document.getElementById('cardTitle').value;
+            const content = document.getElementById('cardContent').value;
+
+            const cardData = {
+                config: {
+                    wide_screen_mode: true
+                },
+                elements: [
+                    {
+                        tag: "div",
+                        text: {
+                            tag: "lark_md",
+                            content: content
+                        }
+                    }
+                ],
+                header: {
+                    template: selectedColor,
+                    title: {
+                        tag: "plain_text",
+                        content: title
+                    }
+                }
+            };
+
+            const jsonStr = JSON.stringify(cardData, null, 2);
+            document.getElementById('jsonOutput').textContent = jsonStr;
+            document.getElementById('jsonOutput').classList.add('show');
+
+            // 复制到剪贴板
+            navigator.clipboard.writeText(jsonStr).then(() => {
+                console.log('JSON已复制到剪贴板');
+            }).catch(err => {
+                console.error('复制失败:', err);
+            });
+        }
+
+        // 初始化预览
+        updatePreview();
+    </script>
+</body>
+</html>
